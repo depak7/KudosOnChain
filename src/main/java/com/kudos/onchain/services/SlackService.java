@@ -536,7 +536,7 @@ public class SlackService {
         body.put("name", name);
         body.put("description", desc);
         body.put("imageUrl", imageUrl);
-        body.put("privateKey", privateKey);
+        body.put("secretKey", privateKey);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
