@@ -1,15 +1,37 @@
-# Step 1: Use a lightweight OpenJDK base image
-FROM eclipse-temurin:21-jdk-alpine
+# -------------------------------------------
+# 🏗️ Stage 1: Build the JAR using Maven
+# -------------------------------------------
+FROM eclipse-temurin:21-jdk-alpine AS builder
 
-# Step 2: Set working directory
+# Set working directory
 WORKDIR /app
 
-# Step 3: Copy the JAR file (assuming you've built it already)
-# Example: target/myapp-0.0.1-SNAPSHOT.jar
-COPY target/*.jar app.jar
+# Copy Maven wrapper and pom.xml first (for dependency caching)
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
 
-# Step 4: Expose the port your app runs on
-EXPOSE 8080
+# Download dependencies first (cached if pom.xml unchanged)
+RUN ./mvnw dependency:go-offline -B
 
-# Step 5: Run the app
+# Copy the rest of the source code
+COPY src src
+
+# Build the application JAR
+RUN ./mvnw clean package -DskipTests
+
+# -------------------------------------------
+# 🚀 Stage 2: Run the JAR on a smaller image
+# -------------------------------------------
+FROM eclipse-temurin:21-jdk-alpine
+
+WORKDIR /app
+
+# Copy built JAR from builder stage
+COPY --from=builder /app/target/*.jar app.jar
+
+# Expose app port (change if your app runs on a different one)
+EXPOSE 8000
+
+# Run the Spring Boot app
 ENTRYPOINT ["java", "-jar", "app.jar"]
