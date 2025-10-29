@@ -280,6 +280,7 @@ public class SlackService {
         try {
             JsonNode payload = objectMapper.readTree(payloadStr);
             String teamId = payload.path("team").path("id").asText();
+            String userId = payload.path("user").path("id").asText();
             String triggerId = payload.path("trigger_id").asText();
             String type = payload.path("type").asText();
             if ("shortcut".equals(type)) {
@@ -291,7 +292,7 @@ public class SlackService {
                 } else if ("nft_collection".equals(callbackId)) {
                     KDPartner partner = kdPartnerRepo.findByTeamId(teamId);
                     if (partner != null && partner.getCollectionAddress() != null) {
-                        sendResponseMessage(responseUrl, "Collection already created at address: " + partner.getCollectionAddress());
+                        sendEphemeralMessage(userId, "Collection already created at address: " + partner.getCollectionAddress());
                     } else {
                         openCollectionMintView(triggerId);
                     }
