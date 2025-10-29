@@ -1,5 +1,6 @@
 package com.kudos.onchain.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -528,7 +529,7 @@ public class SlackService {
 
     }
 
-    private String mintCollectionNftViaNode(String name, String desc, String imageUrl, String privateKey) {
+    private String mintCollectionNftViaNode(String name, String desc, String imageUrl, String privateKey) throws JsonProcessingException {
         String url = "https://nft-metaplex.onrender.com/api/nft/createCollection";
 
         ObjectNode body = objectMapper.createObjectNode();
@@ -541,7 +542,8 @@ public class SlackService {
 
         HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
         ResponseEntity<String> res = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-        return res.getBody();
+        ObjectNode resObj = (ObjectNode) objectMapper.readTree(res.getBody());
+        return resObj.path("address").asText();
     }
 
     private String mintNftViaNode(String name, String desc, String imageUrl, String privateKey, String collectionAddress) {
