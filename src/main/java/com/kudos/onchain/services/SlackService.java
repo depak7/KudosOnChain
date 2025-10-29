@@ -465,7 +465,7 @@ public class SlackService {
             ObjectNode uploadButton = elements.addObject();
             uploadButton.put("type", "button");
             uploadButton.put("text", objectMapper.createObjectNode().put("type", "plain_text").put("text", "Upload Image"));
-            uploadButton.put("url", "http://localhost:5174/");
+            uploadButton.put("url", "https://v0-nft-kudos-uploader.vercel.app/");
             uploadButton.put("action_id", "upload_image_button");
 
             // Image URL input (optional)
