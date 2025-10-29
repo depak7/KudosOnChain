@@ -527,7 +527,7 @@ public class SlackService {
     }
 
     private String mintCollectionNftViaNode(String name, String desc, String imageUrl, String privateKey) {
-        String url = "http://localhost:3000/api/nft/createCollection";
+        String url = "https://nft-metaplex.onrender.com/api/nft/createCollection";
 
         ObjectNode body = objectMapper.createObjectNode();
         body.put("name", name);
@@ -543,7 +543,7 @@ public class SlackService {
     }
 
     private String mintNftViaNode(String name, String desc, String imageUrl, String privateKey, String collectionAddress) {
-        String url = "http://localhost:3000/api/nft/createNft";
+        String url = "https://nft-metaplex.onrender.com/api/nft/createNft";
 
         ObjectNode body = objectMapper.createObjectNode();
         body.put("name", name);
