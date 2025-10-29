@@ -398,6 +398,8 @@ public class SlackService {
             partner.setCollectionAddress(
                     mintCollectionNftViaNode(name, description, imageUrl, walletService.getEmployeeWallet(userId).getPrivateKey()));
             kdPartnerRepo.save(partner);
+            sendEphemeralMessage(userId,
+                    "🎉 Collection created at address: " + partner.getCollectionAddress());
         } catch (Exception e) {
             LOGGER.error("❌ Error handling collection mint submission", e);
         }
@@ -518,8 +520,8 @@ public class SlackService {
             nfts.setTeamId(teamId);
             nfts.setCollectionAddress(collectionAddress);
             organizationNftsRepo.save(nfts);
-//            sendEphemeralMessage(employeeId,
-//                    "🎉Kudos has been given to @" + employee.getUserName() + "Mint Address: " + objRes.path("nftMint").asText());
+            sendEphemeralMessage(employeeId,
+                    "🎉Kudos has been given to @" + employee.getUserName() + "Mint Address: " + objRes.path("nftMint").asText());
         } catch (Exception e) {
             LOGGER.error("Failed to handle Mint NFT Submission", e);
         }
@@ -585,20 +587,20 @@ public class SlackService {
         return "";
     }
 
-    // public void sendEphemeralMessage(String userId, String text) {
-    // try {
-    // String url = "https://slack.com/api/chat.postMessage";
-    //
-    // ObjectNode body = objectMapper.createObjectNode();
-    // body.put("channel", userId);
-    // body.put("text", text);
-    // body.put("response_type", "in_channel");
-    // body.put("as_user", true);
-    // restTemplate.postForEntity(url, buildRequest(body), String.class);
-    // } catch (Exception e) {
-    // LOGGER.error("Failed to send ephemeral message", e);
-    // }
-    // }
+     public void sendEphemeralMessage(String userId, String text) {
+     try {
+     String url = "https://slack.com/api/chat.postMessage";
+
+     ObjectNode body = objectMapper.createObjectNode();
+     body.put("channel", userId);
+     body.put("text", text);
+     body.put("response_type", "in_channel");
+     body.put("as_user", true);
+     restTemplate.postForEntity(url, buildRequest(body), String.class);
+     } catch (Exception e) {
+     LOGGER.error("Failed to send ephemeral message", e);
+     }
+     }
 
     public void sendResponseMessage(String responseUrl, String text) {
         try {
